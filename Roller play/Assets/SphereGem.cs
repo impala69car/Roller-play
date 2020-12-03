@@ -40,7 +40,6 @@ public class SphereGem : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-        color = Random.Range(0, 2);
         unitDestroyRadiusLoads = FindObjectOfType<BasicManager>().numUnitsToSpawnLoad();
         StartCoroutine(GetROtationCoroutine());
     }
@@ -112,21 +111,20 @@ public class SphereGem : MonoBehaviour
         {
             if (RotationNum == 1)
             {
-                transform.TweenPosition(1f, transform.position + new Vector3(20f, 0, 0));
+                transform.TweenPosition(0.5f, transform.position + new Vector3(20f, 0, 0));
             }
             if (RotationNum == 2)
             {
-                transform.TweenPosition(1f, transform.position + new Vector3(-20f, 0, 0));
+                transform.TweenPosition(0.5f, transform.position + new Vector3(-20f, 0, 0));
             }
             if (RotationNum == 3)
             {
-                transform.TweenPosition(1f, transform.position + new Vector3(0, 0, 20f));
+                transform.TweenPosition(0.5f, transform.position + new Vector3(0, 0, 20f));
             }
             if (RotationNum == 4)
             {
-                transform.TweenPosition(1f, transform.position + new Vector3(0, 0, -20f));
-            }
-            
+                transform.TweenPosition(0.5f, transform.position + new Vector3(0, 0, -20f));
+            }            
             yield return null;
             rotationCount++;
         }

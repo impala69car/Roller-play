@@ -1,9 +1,10 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
-
+//Одиночка — это порождающий паттерн, который гарантирует существование только одного объекта определённого класса, а также позволяет достучаться до этого объекта из любого места программы.
 public class LevelManager : BasicManager
 {
+    private LevelManager() { }
     [System.Serializable]
     private class SavedConfig
     {
@@ -14,6 +15,10 @@ public class LevelManager : BasicManager
     }
     [SerializeField] Transform[] CameraPoints;
     private int stateCamera;
+    private static LevelManager _instance;
+    // У нас теперь есть объект-блокировка для синхронизации потоков во
+    // время первого доступа к Одиночке.
+    private static readonly object _lock = new object();
     [SerializeField] private Quaternion characterRot, CameraTartgetRot;
     private bool ClampVerticalRotation = false, smooth = true;
     private float YRot2, XRot2,newYRot=3.45f,newXRot=1.5f;
@@ -28,22 +33,32 @@ public class LevelManager : BasicManager
     private static SavedConfig[] LoadedConfigs;
     private static void InstaceSaved()
     {
-        PlayerPrefs.SetInt("SavedCount", basicManager.gems().Count); PlayerPrefs.Save();
-        savedConfigs = new SavedConfig[basicManager.gems().Count];
-        for (int i = 0; i < basicManager.gems().Count; i++)
+        if (_instance == null)
         {
-            SavedConfig saved = new SavedConfig();
-            saved.color = basicManager.gems()[i].color;
-            saved.RotationNum = basicManager.gems()[i].RotationNum;
-            saved.row = basicManager.gems()[i].transform.position.z;
-            saved.c = basicManager.gems()[i].transform.position.x;
-            saved.sradius = basicManager.gems()[i].gameObject.transform.localScale.x;
-            savedConfigs[i] = saved;
-            string json = JsonUtility.ToJson(savedConfigs[i]);
-            print(json);
-            PlayerPrefs.SetString("SavedConfig"+i, json); PlayerPrefs.Save();
+            lock (_lock)
+            {
+                _instance = new LevelManager();
+            }
         }
-       
+        lock (_lock)
+        {
+            print("lock");
+            PlayerPrefs.SetInt("SavedCount", basicManager.gems().Count); PlayerPrefs.Save();
+            savedConfigs = new SavedConfig[basicManager.gems().Count];
+            for (int i = 0; i < basicManager.gems().Count; i++)
+            {
+                SavedConfig saved = new SavedConfig();
+                saved.color = basicManager.gems()[i].color;
+                saved.RotationNum = basicManager.gems()[i].RotationNum;
+                saved.row = basicManager.gems()[i].transform.position.z;
+                saved.c = basicManager.gems()[i].transform.position.x;
+                saved.sradius = basicManager.gems()[i].gameObject.transform.localScale.x;
+                savedConfigs[i] = saved;
+                string json = JsonUtility.ToJson(savedConfigs[i]);
+                print(json);
+                PlayerPrefs.SetString("SavedConfig" + i, json); PlayerPrefs.Save();
+            }
+        }
     }
     private static void InstanceLoaded()
     {
@@ -144,6 +159,7 @@ public class LevelManager : BasicManager
         if (GUI.Button(new Rect(5, 2, 80, 20), "save"))
         {
             InstaceSaved();
+            basicManager.queryRedBlue();
         }
         /*
         if (stateCamera == 0)

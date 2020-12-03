@@ -37,6 +37,7 @@ public class LoadManager : MonoBehaviour
         if (GUI.Button(new Rect(95, 2, 80, 20), "load"))
         {
             LoadBasic();
+            basicManager.loadREdBlue();
         }
     }
 }

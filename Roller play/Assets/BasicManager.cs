@@ -165,6 +165,16 @@ public class BasicManager : MonoBehaviour
         red = 0;blue = 0;
     }
     bool restart;
+    public void queryRedBlue()
+    {
+        PlayerPrefs.SetInt("red", red);
+        PlayerPrefs.SetInt("blue", blue);
+    }
+    public void loadREdBlue()
+    {
+        red = PlayerPrefs.GetInt("red");
+        blue = PlayerPrefs.GetInt("blue");
+    }
     // Update is called once per frame
     void Update()
     {
