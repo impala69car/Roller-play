@@ -63,6 +63,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\BasicManager.cs" />
+    <Compile Include="Assets\Gem.cs" />
     <Compile Include="Assets\LevelManager.cs" />
     <Compile Include="Assets\LoadManager.cs" />
     <Compile Include="Assets\SphereGem.cs" />

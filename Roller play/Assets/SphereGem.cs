@@ -15,6 +15,12 @@ public class SphereGem : MonoBehaviour
     public float walkLeftRight = 220;
     [SerializeField] GameObject GameColor;
     public float row, col;
+    public string type;
+    public Gem GetGem { get; private set; }
+    public bool isBonus;
+    public int BonusMatchType;
+    public bool isSwirl = false;
+    public int seconds = 0;
     void CalculateAngle(Vector3 temp)
     {
         dir = new Vector3(temp.x, transform.position.y, temp.z) - transform.position;
@@ -111,19 +117,19 @@ public class SphereGem : MonoBehaviour
         {
             if (RotationNum == 1)
             {
-                transform.TweenPosition(0.5f, transform.position + new Vector3(20f, 0, 0));
+                transform.TweenPosition(0.5f, new Vector3(100f, transform.position.y, transform.position.z));
             }
             if (RotationNum == 2)
             {
-                transform.TweenPosition(0.5f, transform.position + new Vector3(-20f, 0, 0));
+                transform.TweenPosition(0.5f,new Vector3(0f, transform.position.y, transform.position.z));
             }
             if (RotationNum == 3)
             {
-                transform.TweenPosition(0.5f, transform.position + new Vector3(0, 0, 20f));
+                transform.TweenPosition(0.5f, new Vector3(transform.position.x, transform.position.y, 100f));
             }
             if (RotationNum == 4)
             {
-                transform.TweenPosition(0.5f, transform.position + new Vector3(0, 0, -20f));
+                transform.TweenPosition(0.5f, new Vector3(transform.position.x, transform.position.y, 0f));
             }            
             yield return null;
             rotationCount++;
@@ -178,10 +184,20 @@ public class SphereGem : MonoBehaviour
             Rotloader();
         }
     }
+    public void isGem(Gem g)
+    {
+        GetGem = g;
+    }
+    public bool isequal(SphereGem hitCandy)
+    {
+        return hitCandy != null && hitCandy.type == type && hitCandy.type != "ingredient" + 0 && hitCandy.type != "ingredient" + 1;
+    }
     void OnCollisionEnter(Collision col)
     {
         if (col.gameObject.tag == "wall")
         {
+            StopCoroutine(GetROtationCoroutine());
+            StartCoroutine(GetROtationCoroutine());
             if (RotationNum == 4)
             {
                 RotationNum = 3;
@@ -208,6 +224,7 @@ public class SphereGem : MonoBehaviour
                 else if (RotationNum == 2) RotationNum = 1;
                 else RotationNum = 2;
                 //Rotloader();
+                
             }
         }
     }
